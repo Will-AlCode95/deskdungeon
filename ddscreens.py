@@ -52,6 +52,7 @@ class TelaNovoJogador(Screen):
 '''
     BINDINGS = [
         Binding("ctrl+s", "salvar", "Salvar"),
+        Binding("ctrl+n", "novo_item", "Novo Item")
     ]
 
     def compose(self):
@@ -63,13 +64,61 @@ class TelaNovoJogador(Screen):
         yield Select([
             ("Mago", "mago"),
             ("Cavaleiro", "cavaleiro"),
-            ("Assassina", "assassina")], id="sl_classe")
+            ("Assassina", "assassina")], id="sl_classe")        
+        yield Static(f"Item equipado: {JOGADOR.item_equipado.get_nome()}",id="stt_item_equipado")        
         yield Footer()
+
+    def action_novo_item(self):
+        # Atualiza Model
+        JOGADOR.item_equipado = Item()
+        # Atualiza View
+        stt_item = self.query_one("#stt_item_equipado",Static)
+        stt_item.update(f"Item equipado: {JOGADOR.item_equipado.get_nome()}")
+
 
     def action_salvar(self):
         nome = self.query_one("#tx_nome",Input).value
         classe = self.query_one("#sl_classe", Select).value
         # Atualizamos a model
         JOGADOR.nome = nome
-        JOGADOR.classe = classe
+        JOGADOR.classe = classe        
         self.notify("Jogador salvo")
+
+
+class TelaJogo(Screen):
+
+    CSS = """"""
+    SUB_TITLE = ""
+
+    BINDINGS = [
+        Binding("up","norte", "Norte"),
+        Binding("down","sul", "Sul"),
+        Binding("right","leste", "Leste"),
+        Binding("left","oeste", "Oeste"),        
+    ]
+
+    def action_norte(self):
+        pass
+
+    def action_sul(self):
+        pass
+
+    def action_leste(self):
+        pass
+
+    def action_oeste(self):
+        pass
+
+
+    def compose(self):
+        yield Header()
+        yield Static(f'Jogador: {JOGADOR.nome}', id="stt_nome_jogador")
+        yield Static(f'Cena: {CENA_ATUAL.nome}', id="stt_nome_cena_atual")
+        yield Footer()
+
+    def on_screen_resume(self):
+        stt_nome_jogador = self.query_one("#stt_nome_jogador",Static)
+        stt_nome_cena_atual = self.query_one("#stt_nome_cena_atual",Static)
+        
+        stt_nome_jogador.update(f'Jogador: {JOGADOR.nome}')
+        stt_nome_cena_atual.update(f'Cena: {CENA_ATUAL.nome}')

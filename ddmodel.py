@@ -145,5 +145,6 @@ cela2.leste = patio
 patio.oeste = cela2
 
 
-
+# ESTADO DO JOGO
 JOGADOR = Jogador()
+CENA_ATUAL = hall
