@@ -106,7 +106,7 @@ class Cena():
 
 
 # MAPA DO JOGO
-hall = Cena("Hall")
+hall:Cena = Cena("Hall")
 sala = Cena("Sala")
 calabouco1 = Cena("Calabouço 1")
 

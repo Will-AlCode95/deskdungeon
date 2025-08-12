@@ -6,7 +6,8 @@ from textual.widgets import (
 from textual.screen import Screen
 from textual.containers import VerticalGroup
 from textual.binding import Binding
-from ddmodel import *
+import ddmodel as model
+
 
 class TelaInicial(Screen):
 
@@ -38,8 +39,8 @@ class TelaInicial(Screen):
         yield Footer()
     
     def on_screen_resume(self):
-        if not JOGADOR.nome == "sem nome":
-            self.sub_title = f"({JOGADOR.nome})"
+        if not model.JOGADOR.nome == "sem nome":
+            self.sub_title = f"({model.JOGADOR.nome})"
 
 class TelaNovoJogador(Screen):
 
@@ -65,23 +66,23 @@ class TelaNovoJogador(Screen):
             ("Mago", "mago"),
             ("Cavaleiro", "cavaleiro"),
             ("Assassina", "assassina")], id="sl_classe")        
-        yield Static(f"Item equipado: {JOGADOR.item_equipado.get_nome()}",id="stt_item_equipado")        
+        yield Static(f"Item equipado: {model.JOGADOR.item_equipado.get_nome()}",id="stt_item_equipado")        
         yield Footer()
 
     def action_novo_item(self):
         # Atualiza Model
-        JOGADOR.item_equipado = Item()
+        model.JOGADOR.item_equipado = Item()
         # Atualiza View
         stt_item = self.query_one("#stt_item_equipado",Static)
-        stt_item.update(f"Item equipado: {JOGADOR.item_equipado.get_nome()}")
+        stt_item.update(f"Item equipado: {model.JOGADOR.item_equipado.get_nome()}")
 
 
     def action_salvar(self):
         nome = self.query_one("#tx_nome",Input).value
         classe = self.query_one("#sl_classe", Select).value
         # Atualizamos a model
-        JOGADOR.nome = nome
-        JOGADOR.classe = classe        
+        model.JOGADOR.nome = nome
+        model.JOGADOR.classe = classe        
         self.notify("Jogador salvo")
 
 
@@ -97,28 +98,32 @@ class TelaJogo(Screen):
         Binding("left","oeste", "Oeste"),        
     ]
 
-    def action_norte(self):
-        pass
-
-    def action_sul(self):
-        pass
-
-    def action_leste(self):
-        pass
-
-    def action_oeste(self):
-        pass
-
-
+    
     def compose(self):
         yield Header()
-        yield Static(f'Jogador: {JOGADOR.nome}', id="stt_nome_jogador")
-        yield Static(f'Cena: {CENA_ATUAL.nome}', id="stt_nome_cena_atual")
+        yield Static(f'Jogador: {model.JOGADOR.nome}', id="stt_nome_jogador")
+        yield Static(f'Cena: {model.CENA_ATUAL.nome}', id="stt_nome_cena_atual")        
         yield Footer()
 
     def on_screen_resume(self):
         stt_nome_jogador = self.query_one("#stt_nome_jogador",Static)
         stt_nome_cena_atual = self.query_one("#stt_nome_cena_atual",Static)
-        
-        stt_nome_jogador.update(f'Jogador: {JOGADOR.nome}')
-        stt_nome_cena_atual.update(f'Cena: {CENA_ATUAL.nome}')
+
+        stt_nome_jogador.update(f'Jogador: {model.JOGADOR.nome}')
+        stt_nome_cena_atual.update(f'Cena: {model.CENA_ATUAL.nome}')
+
+    def action_norte(self):              
+        if model.CENA_ATUAL.norte:
+            model.CENA_ATUAL = model.CENA_ATUAL.norte
+
+    def action_sul(self):
+        if model.CENA_ATUAL.sul:
+            model.CENA_ATUAL = model.CENA_ATUAL.sul
+
+    def action_leste(self):
+        if model.CENA_ATUAL.leste:
+            model.CENA_ATUAL = model.CENA_ATUAL.leste
+
+    def action_oeste(self):
+        if model.CENA_ATUAL.oeste:
+            model.CENA_ATUAL = model.CENA_ATUAL.oeste   
