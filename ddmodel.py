@@ -148,3 +148,12 @@ patio.oeste = cela2
 # ESTADO DO JOGO
 JOGADOR = Jogador()
 CENA_ATUAL = hall
+
+
+#
+# Funções de model
+#
+def pegar_item(item:str):
+    # pegamos o item da cena atual e colocamos no inventário do jogador
+    JOGADOR.inventario[item] = CENA_ATUAL.itens[item]
+    del CENA_ATUAL.itens[item]
