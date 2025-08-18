@@ -62,18 +62,19 @@ class TelaNovoJogador(Screen):
         yield Header()
         yield Static("𝕹𝖔𝖛𝖔 𝕵𝖔𝖌𝖆𝖉𝖔𝖗")
         yield Label("Nome")
-        yield Input(id="tx_nome")
+        yield Input(model.JOGADOR.nome, id="tx_nome")
         yield Label("Classe")   
         yield Select([
             ("Mago", "mago"),
             ("Cavaleiro", "cavaleiro"),
-            ("Assassina", "assassina")], id="sl_classe")        
+            ("Assassina", "assassina")], id="sl_classe", value=model.JOGADOR.classe)
+       
         yield Static(f"Item equipado: {model.JOGADOR.item_equipado.get_nome()}",id="stt_item_equipado")        
         yield Footer()
 
     def action_novo_item(self):
         # Atualiza Model
-        model.JOGADOR.item_equipado = Item()
+        model.JOGADOR.item_equipado = model.Item()
         # Atualiza View
         stt_item = self.query_one("#stt_item_equipado",Static)
         stt_item.update(f"Item equipado: {model.JOGADOR.item_equipado.get_nome()}")
@@ -81,10 +82,11 @@ class TelaNovoJogador(Screen):
 
     def action_salvar(self):
         nome = self.query_one("#tx_nome",Input).value
-        classe = self.query_one("#sl_classe", Select).value
+        classe = self.query_one("#sl_classe", Select).value        
         # Atualizamos a model
         model.JOGADOR.nome = nome
-        model.JOGADOR.classe = classe        
+        model.JOGADOR.classe = classe
+        model.salvar_jogador()
         self.notify("Jogador salvo")
 
 
