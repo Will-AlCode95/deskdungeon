@@ -80,14 +80,35 @@ class Item:
 
 class Jogador():
     def __init__(self):
-        self.nome = "sem nome"
-        self.classe = str()
-        self.xp = 0
-        self.vida = 0
-        self.mana = 0
-        self.stamina = 0  
-        self.inventario = dict()
-        self.item_equipado = Item()
+        import shelve
+        with shelve.open("jogador.db") as db:
+            #Se algum jogador já foi salvo, recuperamos os dados dele            
+            try:
+                #desserializamos o objeto 
+                jogador = db['jogador']
+                # inicializamos este (self) jogador com os dados
+                # recuperado do arquivo 'jogador.db'
+                self.nome = jogador.nome
+                self.classe = jogador.classe
+                self.xp = jogador.xp
+                self.vida = jogador.vida
+                self.mana = jogador.mana
+                self.stamina = jogador.stamina
+                self.inventario = jogador.inventario
+                self.item_equipado = jogador.item_equipado
+            except KeyError:
+                # Se não existe a chave 'jogador'
+                # significa que nenhum jogador foi salvo no arquivo
+                # por isso inicializamos este (self) jogador
+                # com os valores padrão.
+                self.nome = "sem nome"
+                self.classe = str()
+                self.xp = 0
+                self.vida = 0
+                self.mana = 0
+                self.stamina = 0  
+                self.inventario = dict()
+                self.item_equipado = Item()
 
 
 class Cena():
@@ -157,3 +178,8 @@ def pegar_item(item:str):
     # pegamos o item da cena atual e colocamos no inventário do jogador
     JOGADOR.inventario[item] = CENA_ATUAL.itens[item]
     del CENA_ATUAL.itens[item]
+
+def salvar_jogador():
+    import shelve
+    with shelve.open("jogador.db") as db:
+        db['jogador'] = JOGADOR
